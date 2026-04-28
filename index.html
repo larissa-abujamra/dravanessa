@@ -354,7 +354,7 @@
     display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
     max-width: 1160px; margin: 64px auto 0; align-items: start;
   }
-  .loc-info { }
+  
   .loc-address {
     font-family: var(--serif); font-weight: 300; font-size: 1.2rem;
     line-height: 2; color: var(--dark-mid); margin-bottom: 40px;
@@ -376,7 +376,9 @@
     width: 100%; aspect-ratio: 4/3;
     border: 1px solid rgba(184,150,74,0.2); overflow: hidden;
     filter: grayscale(0.3) sepia(0.15);
+    align-self: start;
   }
+  .loc-map.reveal { transform: translateY(0); }
   .loc-map iframe { width: 100%; height: 100%; border: none; }
 
   /* ── FOOTER ───────────────────────────── */
@@ -451,7 +453,7 @@
   <div class="hero-content">
     <span class="hero-eyebrow">Harmonização Facial Premium · Alphaville</span>
     <h1 class="hero-title">
-      Rejuvenesça
+      Rejuvenesça <br>
       <em class="shimmer-text">até 10 anos.</em>
     </h1>
     <p class="hero-tagline">Sem exageros. Sem perder quem você é.</p>
@@ -627,12 +629,10 @@
 
 <!-- LOCALIZAÇÃO -->
 <section id="localizacao">
-  <div class="container">
-    <span class="section-label reveal">Onde estamos</span>
-    <h2 class="section-title reveal reveal-delay-1">Localização &<br><em>Agendamento</em></h2>
-  </div>
   <div class="loc-grid">
     <div class="loc-info reveal">
+      <span class="section-label">Onde estamos</span>
+      <h2 class="section-title">Localização &<br><em>Agendamento</em></h2>
       <p class="loc-address">
         Av. Andrômeda, 885<br>
         Sala 1304, Torre A<br>
