@@ -275,34 +275,143 @@
 
   /* ── SERVIÇOS ─────────────────────────── */
   #servicos { background: var(--warm-white); }
-  .servicos-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
-    margin-top: 64px; max-width: 1160px; margin-left: auto; margin-right: auto;
+  #servicos .section-intro { margin-left: auto; margin-right: auto; text-align: center; }
+  #servicos .section-label { font-size: 0.7rem; }
+  #servicos .section-title { font-size: calc(clamp(3.2rem, 8vw, 5rem) - 6px); }
+  .servicos-track-wrap {
+    max-width: 1280px;
+    margin: 48px auto 0;
+    position: relative;
+  }
+  .servicos-track-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(201,168,76,0.25);
+  }
+  .servicos-track {
+    overflow-x: auto;
+    overflow-y: hidden;
+    cursor: grab;
+    user-select: none;
+    touch-action: pan-x;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  }
+  .servicos-track::-webkit-scrollbar { display: none; }
+  .servicos-track.is-dragging { cursor: grabbing; }
+  .servicos-row {
+    display: flex;
+    gap: 24px;
+    padding: 22px 0;
+    width: max-content;
   }
   .servico-card {
-    background: var(--beige); padding: 48px 36px;
-    position: relative; overflow: hidden;
-    transition: background 0.35s;
-    cursor: default;
+    width: 340px;
+    height: 240px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+    transform: none;
+    transform-origin: center center;
+    filter: brightness(1);
+    transition: transform 0.4s ease, border-color 0.4s ease, filter 0.4s ease;
+    opacity: 0;
+    animation: servicoEnter 0.55s ease forwards;
   }
-  .servico-card::after {
-    content: ''; position: absolute; bottom: 0; left: 0; right: 100%; height: 2px;
-    background: linear-gradient(90deg, var(--gold), var(--rose-light)); transition: right 0.4s cubic-bezier(.4,0,.2,1);
+  .servicos-row .servico-card:nth-child(1) { animation-delay: 0.05s; }
+  .servicos-row .servico-card:nth-child(2) { animation-delay: 0.15s; }
+  .servicos-row .servico-card:nth-child(3) { animation-delay: 0.25s; }
+  .servicos-row .servico-card:nth-child(4) { animation-delay: 0.35s; }
+  .servicos-row .servico-card:nth-child(5) { animation-delay: 0.45s; }
+  .servicos-row .servico-card:nth-child(6) { animation-delay: 0.55s; }
+  .servico-card.is-clone { animation: none; opacity: 1; }
+  @keyframes servicoEnter {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
   }
-  .servico-card:hover::after { right: 0; }
-  .servico-card:hover { background: #EDE4D9; }
-  .servico-name {
-    font-family: var(--serif); font-weight: 400; font-size: 1.35rem;
-    color: var(--dark); margin-bottom: 12px;
+  .servico-card:hover {
+    transform: none;
+    border-color: rgba(201,168,76,0.8);
+    filter: brightness(1.02);
   }
-  .servico-desc {
-    font-family: var(--sans); font-weight: 300; font-size: 0.85rem;
-    line-height: 1.7; color: var(--text-body);
+  .servico-card-topline {
+    width: 40px;
+    height: 2px;
+    background: #C9A84C;
+    transition: width 0.5s ease;
   }
-  .servico-num {
-    font-family: var(--serif); font-size: 3.5rem; font-weight: 300;
-    color: rgba(201,168,76,0.15); line-height: 1;
-    position: absolute; bottom: 16px; right: 24px;
+  .servico-card:hover .servico-card-topline { width: 100%; }
+  .servico-card-inner {
+    height: 100%;
+    padding: 28px 28px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .servico-card-name {
+    margin-top: 20px;
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #2C1810;
+    max-width: 92%;
+  }
+  .servico-card-desc {
+    margin-top: 1rem;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #8A7A6A;
+    opacity: 0.7;
+    transform: translateY(6px);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    max-width: 95%;
+  }
+  .servico-card:hover .servico-card-desc {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .servicos-indicator {
+    margin: 26px auto 0;
+    width: max-content;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 1s ease;
+  }
+  .servicos-indicator.is-hidden { opacity: 0; }
+  .servicos-indicator-line {
+    width: 120px;
+    height: 1px;
+    background: rgba(201,168,76,0.45);
+    position: relative;
+    margin: 0 auto 12px;
+  }
+  .servicos-indicator-dot {
+    position: absolute;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #C9A84C;
+    transform: translateY(-50%);
+    animation: indicatorSlide 6s ease-in-out infinite;
+  }
+  @keyframes indicatorSlide {
+    0% { left: 0; }
+    50% { left: calc(100% - 6px); }
+    100% { left: 0; }
+  }
+  .servicos-indicator-text {
+    font-family: var(--sans);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #C9A84C;
   }
 
   /* ── NOSSO ESPAÇO ─────────────────────── */
@@ -504,11 +613,20 @@
   @media (max-width: 900px) {
     section { padding: 88px 24px; }
     #nav { padding: 0 24px; }
+    .nav-logo-text { display: none; }
+    .nav-logo img { height: 40px; width: 40px; }
+    .nav-cta {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      padding: 8px 14px;
+    }
     .nav-links { display: none; }
     .sobre-grid { grid-template-columns: 1fr; gap: 40px; }
-    .sobre-image-frame { max-height: 380px; aspect-ratio: 3/4; }
+    .sobre-image-frame { max-height: 380px; aspect-ratio: 3/4; margin: 0 auto; }
     .diferenciais-grid { grid-template-columns: 1fr; }
-    .servicos-grid { grid-template-columns: 1fr 1fr; }
+    #servicos .section-title { font-size: clamp(2.7rem, 7.5vw, 4rem); }
+    .servico-card { width: 300px; height: 360px; }
+    .servico-card-name { font-size: 1.85rem; }
     .espaco-intro { padding: 78px 20px 26px; }
     .espaco-tile { width: max(var(--w, 25vw), 190px); }
     .depoimentos-grid { grid-template-columns: 1fr; }
@@ -517,8 +635,19 @@
     footer { padding: 48px 24px; }
   }
   @media (max-width: 560px) {
-    .servicos-grid { grid-template-columns: 1fr; }
     .hero-title { font-size: 2.8rem; }
+  }
+  @media (max-width: 768px) {
+    .servicos-track-wrap { margin-top: 46px; }
+    .servicos-row { padding: 26px 0; }
+    .servico-card { width: 250px; height: 320px; }
+    .servico-card-inner { padding: 22px 20px; }
+    .servico-card-name { font-size: 1.6rem; }
+    .servico-card-desc { font-size: 0.78rem; }
+  }
+  @media (max-width: 480px) {
+    .servico-card { transform: none; }
+    .servico-card:hover { transform: none; }
   }
 </style>
 </head>
@@ -610,40 +739,63 @@
 <!-- SERVIÇOS -->
 <section id="servicos">
   <div class="container" style="text-align:center; margin-bottom:0">
-    <span class="section-label reveal">Tratamentos</span>
-    <h2 class="section-title reveal reveal-delay-1" style="margin:0 auto">Serviços</h2>
-    <p class="section-intro reveal reveal-delay-2" style="margin:16px auto 0; text-align:center">Cada procedimento é realizado com técnica refinada e produtos de excelência internacional.</p>
+    <span class="section-label reveal">Serviços</span>
+    <h2 class="section-title reveal reveal-delay-1" style="margin:0 auto">Tratamentos</h2>
   </div>
-  <div class="servicos-grid" style="margin-top:56px">
-    <div class="servico-card reveal">
-      <h3 class="servico-name">Toxina Botulínica</h3>
-      <p class="servico-desc">Suavização de linhas de expressão com preservação total da naturalidade e movimento facial.</p>
-      <span class="servico-num">01</span>
+  <div class="servicos-track-wrap">
+   
+    <div class="servicos-track" id="servicos-track">
+      <div class="servicos-row">
+        <article class="servico-card" style="background:#F5EFE6">
+          <div class="servico-card-inner">
+            <div class="servico-card-topline"></div>
+            <h3 class="servico-card-name">Toxina Botulínica</h3>
+            <p class="servico-card-desc">Suavização natural das linhas de expressão com preservação total do movimento facial.</p>
+          </div>
+        </article>
+        <article class="servico-card" style="background:#EDE4D8">
+          <div class="servico-card-inner">
+            <div class="servico-card-topline"></div>
+            <h3 class="servico-card-name">Preenchimento Labial</h3>
+            <p class="servico-card-desc">Definição, volume e simetria labial com ácido hialurônico de alta densidade.</p>
+          </div>
+        </article>
+        <article class="servico-card" style="background:#F5EFE6">
+          <div class="servico-card-inner">
+            <div class="servico-card-topline"></div>
+            <h3 class="servico-card-name">Preenchimento Facial</h3>
+            <p class="servico-card-desc">Restauração do volume e contorno facial com técnicas de projeção e sustentação.</p>
+          </div>
+        </article>
+        <article class="servico-card" style="background:#EAE0D2">
+          <div class="servico-card-inner">
+            <div class="servico-card-topline"></div>
+            <h3 class="servico-card-name">Bioestimuladores de Colágeno</h3>
+            <p class="servico-card-desc">Estimulação profunda da produção de colágeno para rejuvenescimento gradual.</p>
+          </div>
+        </article>
+        <article class="servico-card" style="background:#F5EFE6">
+          <div class="servico-card-inner">
+            <div class="servico-card-topline"></div>
+            <h3 class="servico-card-name">Skinbooster</h3>
+            <p class="servico-card-desc">Hidratação profunda e luminosidade com micro-injeções de ácido hialurônico não reticulado.</p>
+          </div>
+        </article>
+        <article class="servico-card" style="background:#EDE4D8">
+          <div class="servico-card-inner">
+            <div class="servico-card-topline"></div>
+            <h3 class="servico-card-name">Fios de PDO</h3>
+            <p class="servico-card-desc">Sustentação e lifting não cirúrgico com fios absorvíveis de última geração.</p>
+          </div>
+        </article>
+      </div>
     </div>
-    <div class="servico-card reveal reveal-delay-1">
-      <h3 class="servico-name">Preenchimento Labial</h3>
-      <p class="servico-desc">Definição, volume e simetria labial com ácido hialurônico de alta densidade.</p>
-      <span class="servico-num">02</span>
-    </div>
-    <div class="servico-card reveal reveal-delay-2">
-      <h3 class="servico-name">Preenchimento Facial</h3>
-      <p class="servico-desc">Restauração do volume e contorno facial, com técnicas de projeção e sustentação.</p>
-      <span class="servico-num">03</span>
-    </div>
-    <div class="servico-card reveal">
-      <h3 class="servico-name">Bioestimuladores de Colágeno</h3>
-      <p class="servico-desc">Estimulação profunda da produção de colágeno para rejuvenescimento gradual e duradouro.</p>
-      <span class="servico-num">04</span>
-    </div>
-    <div class="servico-card reveal reveal-delay-1">
-      <h3 class="servico-name">Skinbooster</h3>
-      <p class="servico-desc">Hidratação profunda e luminosidade com micro-injeções de ácido hialurônico não reticulado.</p>
-      <span class="servico-num">05</span>
-    </div>
-    <div class="servico-card reveal reveal-delay-2">
-      <h3 class="servico-name">Fios de PDO</h3>
-      <p class="servico-desc">Sustentação e lifting não cirúrgico com fios absorvíveis de última geração.</p>
-      <span class="servico-num">06</span>
+   
+    <div class="servicos-indicator" id="servicos-indicator">
+      <div class="servicos-indicator-line">
+        <span class="servicos-indicator-dot"></span>
+      </div>
+      <p class="servicos-indicator-text">arraste para explorar</p>
     </div>
   </div>
 </section>
@@ -881,6 +1033,119 @@ document.querySelectorAll('.faq-q').forEach(btn => {
     if (!isOpen) item.classList.add('open');
   });
 });
+
+// ── SERVIÇOS DRAG SCROLL ──────────────────
+(function() {
+  const track = document.getElementById('servicos-track');
+  const indicator = document.getElementById('servicos-indicator');
+  const row = track ? track.querySelector('.servicos-row') : null;
+  if (!track || !row) return;
+
+  const originalCards = Array.from(row.children);
+  originalCards.forEach(card => {
+    const tailClone = card.cloneNode(true);
+    const headClone = card.cloneNode(true);
+    tailClone.classList.add('is-clone');
+    headClone.classList.add('is-clone');
+    row.appendChild(tailClone);
+    row.insertBefore(headClone, row.firstChild);
+  });
+
+  let loopWidth = 0;
+  function measureLoop() {
+    loopWidth = row.scrollWidth / 3;
+    track.scrollLeft = loopWidth;
+  }
+  measureLoop();
+  window.addEventListener('resize', measureLoop);
+
+  let isDragging = false;
+  let startX = 0;
+  let startScrollLeft = 0;
+  let velocity = 0;
+  let momentumId = null;
+  let hasDragged = false;
+  let lastX = 0;
+  let lastMoveTime = 0;
+
+  function stopMomentum() {
+    if (momentumId) {
+      cancelAnimationFrame(momentumId);
+      momentumId = null;
+    }
+  }
+
+  function normalizeInfiniteScroll() {
+    if (!loopWidth) return;
+    if (track.scrollLeft < loopWidth * 0.5) {
+      track.scrollLeft += loopWidth;
+    } else if (track.scrollLeft > loopWidth * 1.5) {
+      track.scrollLeft -= loopWidth;
+    }
+  }
+
+  function startMomentum() {
+    stopMomentum();
+    const step = () => {
+      track.scrollLeft -= velocity;
+      normalizeInfiniteScroll();
+      velocity *= 0.95;
+      if (Math.abs(velocity) > 0.15) {
+        momentumId = requestAnimationFrame(step);
+      }
+    };
+    momentumId = requestAnimationFrame(step);
+  }
+
+  function hideIndicatorOnce() {
+    if (!hasDragged && indicator) {
+      hasDragged = true;
+      indicator.classList.add('is-hidden');
+    }
+  }
+
+  track.addEventListener('mousedown', (event) => {
+    isDragging = true;
+    track.classList.add('is-dragging');
+    startX = event.pageX;
+    startScrollLeft = track.scrollLeft;
+    lastX = event.pageX;
+    lastMoveTime = performance.now();
+    velocity = 0;
+    stopMomentum();
+  });
+
+  track.addEventListener('mousemove', (event) => {
+    if (!isDragging) return;
+    event.preventDefault();
+    const deltaX = event.pageX - startX;
+    track.scrollLeft = startScrollLeft - deltaX;
+    normalizeInfiniteScroll();
+
+    const now = performance.now();
+    const dt = Math.max(now - lastMoveTime, 1);
+    velocity = (event.pageX - lastX) / dt * 16;
+    lastX = event.pageX;
+    lastMoveTime = now;
+    hideIndicatorOnce();
+  });
+
+  function endDrag() {
+    if (!isDragging) return;
+    isDragging = false;
+    track.classList.remove('is-dragging');
+    startMomentum();
+  }
+
+  track.addEventListener('mouseleave', endDrag);
+  window.addEventListener('mouseup', endDrag);
+  track.addEventListener('dragstart', (event) => event.preventDefault());
+  track.addEventListener('scroll', normalizeInfiniteScroll, { passive: true });
+
+  track.addEventListener('touchstart', () => {
+    hideIndicatorOnce();
+  }, { passive: true });
+})();
 
 // ── ESPAÇO ZOOM PARALLAX ──────────────────
 (function() {
