@@ -60,6 +60,21 @@
     font-family: var(--serif); font-weight: 400; font-size: 1rem;
     letter-spacing: 0.12em; color: var(--dark); text-transform: uppercase;
   }
+  .nav-links {
+    position: absolute;
+    left: 50%;
+    display: flex; align-items: center; gap: 30px;
+    opacity: 0; transform: translateX(-50%) translateY(-8px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  #nav.scrolled .nav-links { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .nav-link {
+    font-family: var(--sans); font-weight: 300; font-size: 0.68rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold-deep); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-link:hover { color: var(--rose); }
   .nav-cta {
     font-family: var(--sans); font-weight: 300; font-size: 0.75rem;
     letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-deep);
@@ -290,6 +305,80 @@
     position: absolute; bottom: 16px; right: 24px;
   }
 
+  /* ── NOSSO ESPAÇO ─────────────────────── */
+  #espaco {
+    --cream: #FAF8F5;
+    --warm-beige: #F0EBE3;
+    background: var(--cream);
+    padding: 0 0 20px;
+  }
+  .espaco-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.7) 50%, transparent 100%);
+    background-size: 220% 100%;
+    animation: espacoShimmer 7s linear infinite;
+  }
+  @keyframes espacoShimmer {
+    0% { background-position: -120% 0; }
+    100% { background-position: 120% 0; }
+  }
+  .espaco-intro {
+    text-align: center;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 86px 24px 32px;
+  }
+  .espaco-title {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    color: #C9A84C;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .espaco-subtitle {
+    font-family: var(--sans);
+    font-size: 0.86rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: rgba(92,78,56,0.85);
+  }
+  .espaco-scroll {
+    position: relative;
+    height: 300vh;
+  }
+  .espaco-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--cream);
+  }
+  .espaco-collage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .espaco-tile {
+    position: absolute;
+    left: calc(50% + var(--x, 0vw));
+    top: calc(50% + var(--y, 0vh));
+    width: var(--w, 25vw);
+    height: var(--h, 25vh);
+    transform: translate(-50%, -50%) scale(1);
+    transform-origin: center center;
+    will-change: transform;
+    overflow: hidden;
+  }
+  .espaco-tile.is-center { z-index: 3; }
+  .espaco-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
   /* ── DEPOIMENTOS ──────────────────────── */
   #depoimentos { background: var(--beige); padding: 100px 48px; }
   .depoimentos-grid {
@@ -415,10 +504,13 @@
   @media (max-width: 900px) {
     section { padding: 88px 24px; }
     #nav { padding: 0 24px; }
+    .nav-links { display: none; }
     .sobre-grid { grid-template-columns: 1fr; gap: 40px; }
     .sobre-image-frame { max-height: 380px; aspect-ratio: 3/4; }
     .diferenciais-grid { grid-template-columns: 1fr; }
     .servicos-grid { grid-template-columns: 1fr 1fr; }
+    .espaco-intro { padding: 78px 20px 26px; }
+    .espaco-tile { width: max(var(--w, 25vw), 190px); }
     .depoimentos-grid { grid-template-columns: 1fr; }
     .loc-grid { grid-template-columns: 1fr; gap: 40px; }
     #localizacao { padding: 88px 24px; }
@@ -438,6 +530,11 @@
     <img src="uploads/pasted-1777392010488-0.png" alt="CV Monogram">
     <span class="nav-logo-text">Dra. Vanessa Cesconetto</span>
   </a>
+  <div class="nav-links">
+    <a href="#sobre" class="nav-link">Sobre</a>
+    <a href="#servicos" class="nav-link">Serviços</a>
+    <a href="#espaco" class="nav-link">Espaço</a>
+  </div>
   <a href="https://wa.me/5511900000000" class="nav-cta btn-gold" target="_blank"><span>Agendar Consulta</span></a>
 </nav>
 
@@ -549,6 +646,43 @@
       <span class="servico-num">06</span>
     </div>
   </div>
+</section>
+
+<!-- NOSSO ESPAÇO -->
+<section id="espaco">
+  <div class="espaco-divider"></div>
+  <div class="espaco-intro">
+    <h2 class="espaco-title">Nosso Espaço</h2>
+    <p class="espaco-subtitle">Um ambiente pensado para o seu bem-estar</p>
+  </div>
+  <div class="espaco-scroll">
+    <div class="espaco-sticky" id="espaco-sticky">
+      <div class="espaco-collage" id="espaco-collage">
+        <div class="espaco-tile is-center" data-scale-target="4" style="--x:0vw; --y:0vh; --w:25vw; --h:25vh;">
+          <img src="uploads/office1.png" alt="Lounge area da clínica">
+        </div>
+        <div class="espaco-tile" data-scale-target="1.18" style="--x:5vw; --y:-30vh; --w:35vw; --h:30vh;">
+          <img src="uploads/office2.png" alt="Bar stools em close da clínica">
+        </div>
+        <div class="espaco-tile" data-scale-target="1.14" style="--x:-25vw; --y:-10vh; --w:20vw; --h:45vh;">
+          <img src="uploads/office4.png" alt="Sala de procedimentos da clínica">
+        </div>
+        <div class="espaco-tile" data-scale-target="1.16" style="--x:27.5vw; --y:0vh; --w:25vw; --h:25vh;">
+          <img src="uploads/office5.png" alt="Sala de espera da clínica">
+        </div>
+        <div class="espaco-tile" data-scale-target="1.15" style="--x:5vw; --y:27.5vh; --w:20vw; --h:25vh;">
+          <img src="uploads/office3.png" alt="Sala de treinamentos da clínica">
+        </div>
+        <div class="espaco-tile" data-scale-target="1.2" style="--x:-22.5vw; --y:27.5vh; --w:30vw; --h:25vh;">
+          <img src="uploads/office1.png" alt="Lounge da clínica em outro ângulo">
+        </div>
+        <div class="espaco-tile" data-scale-target="1.12" style="--x:25vw; --y:22.5vh; --w:15vw; --h:15vh;">
+          <img src="uploads/office4.png" alt="Detalhes da sala de procedimentos">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="espaco-divider"></div>
 </section>
 
 <!-- DEPOIMENTOS -->
@@ -747,6 +881,75 @@ document.querySelectorAll('.faq-q').forEach(btn => {
     if (!isOpen) item.classList.add('open');
   });
 });
+
+// ── ESPAÇO ZOOM PARALLAX ──────────────────
+(function() {
+  const section = document.getElementById('espaco');
+  const scrollArea = section ? section.querySelector('.espaco-scroll') : null;
+  const collage = document.getElementById('espaco-collage');
+  if (!section || !scrollArea || !collage) return;
+
+  const tiles = Array.from(collage.querySelectorAll('.espaco-tile'));
+  let targetScrollY = window.scrollY;
+  let smoothScrollY = window.scrollY;
+  let isVisible = false;
+  let rafId = null;
+
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  function lerp(start, end, amt) {
+    return start + (end - start) * amt;
+  }
+
+  function getProgress(scrollY) {
+    const sectionTop = scrollArea.offsetTop;
+    const sectionTravel = scrollArea.offsetHeight - window.innerHeight;
+    const progress = (scrollY - sectionTop) / sectionTravel;
+    return clamp(progress, 0, 1);
+  }
+
+  function applyZoom(progress) {
+    const centerProgress = clamp(progress / 0.82, 0, 1);
+    const sideProgress = clamp(progress / 0.9, 0, 1);
+    tiles.forEach(tile => {
+      const targetScale = Number(tile.dataset.scaleTarget || 1);
+      const useProgress = tile.classList.contains('is-center') ? centerProgress : sideProgress;
+      const currentScale = 1 + (targetScale - 1) * useProgress;
+      tile.style.transform = `translate(-50%, -50%) scale(${currentScale.toFixed(4)})`;
+    });
+  }
+
+  function tick() {
+    smoothScrollY = lerp(smoothScrollY, targetScrollY, 0.08);
+    if (Math.abs(targetScrollY - smoothScrollY) < 0.02) {
+      smoothScrollY = targetScrollY;
+    }
+
+    if (isVisible) {
+      applyZoom(getProgress(smoothScrollY));
+    }
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('scroll', () => {
+    targetScrollY = window.scrollY;
+  }, { passive: true });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      isVisible = entry.isIntersecting;
+    });
+  }, { threshold: 0 });
+
+  io.observe(section);
+  applyZoom(getProgress(window.scrollY));
+  if (!rafId) {
+    rafId = requestAnimationFrame(tick);
+  }
+})();
 </script>
 </body>
 </html>
