@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu de Serviços — Dra. Vanessa Cesconetto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FAF8F5;
+    --gold: #C9A84C;
+    --gold-light: #E2C97E;
+    --dark: #2C1810;
+    --text-muted: rgba(44,24,16,0.65);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Jost', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    background: var(--cream);
+    color: var(--dark);
+    font-family: var(--sans);
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  #nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 72px;
+    transition: background 0.5s, box-shadow 0.5s;
+  }
+  #nav.scrolled {
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 rgba(201,168,76,0.15);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px; text-decoration: none;
+    opacity: 0; transform: translateY(-8px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  #nav.scrolled .nav-logo { opacity: 1; transform: translateY(0); }
+  .nav-logo img { height: 44px; width: 44px; object-fit: contain; mix-blend-mode: multiply; }
+  .nav-logo-text {
+    font-family: var(--serif); font-weight: 400; font-size: 1rem;
+    letter-spacing: 0.12em; color: var(--dark); text-transform: uppercase;
+  }
+  .nav-links {
+    position: absolute;
+    left: 50%;
+    display: flex; align-items: center; gap: 26px;
+    opacity: 0; transform: translateX(-50%) translateY(-8px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  #nav.scrolled .nav-links { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .nav-link {
+    font-family: var(--sans); font-weight: 300; font-size: 0.68rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--dark); text-decoration: none;
+    opacity: 0.85;
+    transition: color 0.3s, opacity 0.3s;
+  }
+  .nav-link:hover { color: var(--gold); opacity: 1; }
+  .nav-cta {
+    font-family: var(--sans); font-weight: 300; font-size: 0.75rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--dark);
+    border: 1px solid var(--gold); padding: 10px 24px; text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+    opacity: 0; transform: translateY(-8px);
+    transition: opacity 0.5s, transform 0.5s, background 0.3s, color 0.3s;
+  }
+  #nav.scrolled .nav-cta { opacity: 1; transform: translateY(0); }
+  .nav-cta:hover { background: var(--gold); color: #fff; }
+
+  .svc-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 24px 80px;
+    background:
+      radial-gradient(ellipse at 50% 42%, rgba(240,235,227,0.85) 0%, var(--cream) 58%);
+    overflow: hidden;
+  }
+  .svc-hero-deco {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    font-family: var(--serif);
+    font-size: 20vw;
+    font-weight: 300;
+    color: rgba(201,168,76,0.05);
+    letter-spacing: 0.02em;
+    user-select: none;
+  }
+  .svc-hero-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 720px;
+  }
+  .svc-eyebrow {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateY(14px);
+    animation: heroIn 0.7s ease 0.05s forwards;
+  }
+  .svc-title {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 1.05;
+    color: var(--dark);
+    margin: 18px 0 14px;
+    opacity: 0;
+    transform: translateY(18px);
+    animation: heroIn 0.75s ease 0.2s forwards;
+  }
+  .svc-sub {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: heroIn 0.75s ease 0.35s forwards;
+  }
+  .svc-hero-line {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 22px auto 0;
+    opacity: 0;
+    transform: scaleX(0.4);
+    animation: heroLine 0.6s ease 0.5s forwards;
+  }
+  @keyframes heroIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes heroLine {
+    to { opacity: 1; transform: scaleX(1); }
+  }
+  .svc-scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--gold);
+    opacity: 0.85;
+    animation: chevBounce 1.6s ease-in-out infinite;
+  }
+  @keyframes chevBounce {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, 8px); }
+  }
+
+  .svc-main { padding: 0 24px 120px; }
+
+  .svc-sep {
+    max-width: 1100px;
+    margin: 72px auto 48px;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    padding-top: 36px;
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .svc-sep:first-of-type { margin-top: 0; border-top: none; padding-top: 0; }
+
+  .svc-cat {
+    max-width: 1100px;
+    margin: 0 auto 56px;
+  }
+  .svc-cat-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 28px;
+    align-items: end;
+    margin-bottom: 8px;
+  }
+  .svc-cat-num {
+    font-family: var(--serif);
+    font-size: 8rem;
+    font-weight: 300;
+    line-height: 0.85;
+    color: rgba(201,168,76,0.08);
+    transform: translateX(-40px);
+    opacity: 0;
+    transition: transform 0.7s ease, opacity 0.7s ease;
+  }
+  .svc-cat-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    color: var(--dark);
+    transform: translateX(40px);
+    opacity: 0;
+    transition: transform 0.7s ease, opacity 0.7s ease;
+  }
+  .svc-cat-line {
+    height: 1px;
+    width: 0;
+    background: var(--gold);
+    margin-top: 18px;
+    transition: width 0.8s ease 0.2s;
+  }
+  .svc-cat.is-visible .svc-cat-num,
+  .svc-cat.is-visible .svc-cat-title {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .svc-cat.is-visible .svc-cat-line {
+    width: 100%;
+  }
+
+  .svc-row {
+    display: grid;
+    grid-template-columns: minmax(200px, 1.1fr) minmax(240px, 1.6fr) minmax(120px, 0.5fr);
+    gap: 28px;
+    align-items: start;
+    padding: 1.8rem 0;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out, border-color 0.3s;
+  }
+  .svc-cat.is-visible .svc-row {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .svc-cat.is-visible .svc-row:nth-child(2) { transition-delay: 0.05s; }
+  .svc-cat.is-visible .svc-row:nth-child(3) { transition-delay: 0.15s; }
+  .svc-cat.is-visible .svc-row:nth-child(4) { transition-delay: 0.25s; }
+  .svc-cat.is-visible .svc-row:nth-child(5) { transition-delay: 0.35s; }
+  .svc-cat.is-visible .svc-row:nth-child(6) { transition-delay: 0.45s; }
+  .svc-cat.is-visible .svc-row:nth-child(7) { transition-delay: 0.55s; }
+  .svc-cat.is-visible .svc-row:nth-child(8) { transition-delay: 0.65s; }
+  .svc-name {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--dark);
+    transition: transform 0.3s ease;
+  }
+  .svc-desc {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: #8A7A6A;
+    max-width: 500px;
+  }
+  .svc-dur {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold);
+    text-align: right;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    white-space: nowrap;
+  }
+  .svc-row:hover {
+    border-bottom-color: var(--gold);
+  }
+  .svc-row:hover .svc-name {
+    transform: translateX(8px);
+  }
+  .svc-row:hover .svc-dur {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .svc-cta-band {
+    margin-top: 80px;
+    width: 100%;
+    min-height: 200px;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+  }
+  .svc-cta-inner { max-width: 640px; }
+  .svc-cta-title {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .svc-cta-sub {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 22px;
+  }
+  .svc-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 300;
+    background: #fff;
+    color: var(--gold);
+    padding: 14px 28px;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.65);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .svc-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+  }
+
+  footer {
+    background: #EFE6D9;
+    padding: 64px 48px;
+    text-align: center;
+  }
+  .footer-logo { margin: 0 auto 24px; display: block; height: 80px; width: auto; mix-blend-mode: multiply; }
+  .footer-name {
+    font-family: var(--serif); font-weight: 300; font-size: 1.1rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--dark); opacity: 0.85; margin-bottom: 8px;
+  }
+  .footer-specialty {
+    font-family: var(--sans); font-weight: 300; font-size: 0.65rem;
+    letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold);
+    margin-bottom: 36px;
+  }
+  .footer-social {
+    display: flex; justify-content: center; gap: 24px; margin-bottom: 48px;
+  }
+  .footer-social a {
+    font-family: var(--sans); font-weight: 300; font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-muted); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-social a:hover { color: var(--gold); }
+  .footer-legal {
+    font-family: var(--sans); font-weight: 300; font-size: 0.65rem;
+    line-height: 1.7; color: rgba(44,24,16,0.45);
+    max-width: 520px; margin: 0 auto; letter-spacing: 0.05em;
+  }
+  .footer-divider {
+    width: 40px; height: 1px; background: rgba(201,168,76,0.35);
+    margin: 0 auto 48px;
+  }
+
+  @media (max-width: 900px) {
+    #nav { padding: 0 24px; }
+    .nav-logo-text { display: none; }
+    .nav-logo img { height: 40px; width: 40px; }
+    .nav-cta {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      padding: 8px 14px;
+    }
+    .nav-links { display: none; }
+    footer { padding: 48px 24px; }
+  }
+
+  @media (max-width: 768px) {
+    .svc-cat-num { font-size: 4rem; }
+    .svc-cat-header { grid-template-columns: 1fr; gap: 8px; }
+    .svc-row {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 1.4rem 0;
+    }
+    .svc-desc { max-width: none; }
+    .svc-dur { display: none; }
+    .svc-row:hover .svc-name { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html#hero" class="nav-logo">
+    <img src="uploads/pasted-1777392010488-0.png" alt="CV Monogram">
+    <span class="nav-logo-text">Dra. Vanessa Cesconetto</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html#sobre" class="nav-link">Sobre</a>
+    <a href="index.html#servicos" class="nav-link">Serviços</a>
+    <a href="servicos.html" class="nav-link">Menu</a>
+    <a href="index.html#espaco" class="nav-link">Espaço</a>
+  </div>
+  <a href="https://wa.me/5511900000000" class="nav-cta" target="_blank">Agendar Consulta</a>
+</nav>
+
+<section class="svc-hero" id="topo">
+  <div class="svc-hero-deco" aria-hidden="true">MENU</div>
+  <div class="svc-hero-inner">
+    <p class="svc-eyebrow">Procedimentos</p>
+    <h1 class="svc-title">Menu de Serviços</h1>
+    <p class="svc-sub">Cada tratamento é pensado individualmente, com técnica refinada e produtos de excelência.</p>
+    <div class="svc-hero-line"></div>
+  </div>
+  <div class="svc-scroll-hint" aria-hidden="true">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+  </div>
+</section>
+
+<main class="svc-main">
+
+<div class="svc-sep">◆  Preenchimentos  ◆</div>
+<section class="svc-cat" data-cat>
+  <div class="svc-cat-header">
+    <div class="svc-cat-num">01</div>
+    <h2 class="svc-cat-title">Preenchimentos</h2>
+  </div>
+  <div class="svc-cat-line"></div>
+  <div class="svc-row" data-duration="12–18 meses (var.)">
+    <div class="svc-name">Preenchimentos de Malar, Mento, Mandíbula e Labial</div>
+    <p class="svc-desc">Aplicação de preenchedores à base de ácido hialurônico para esculpir e definir maçãs, mento, mandíbula e lábios, proporcionando contornos evidentes e aparência rejuvenescida.</p>
+    <div class="svc-dur">12–18 meses (var.)</div>
+  </div>
+  <div class="svc-row" data-duration="~12 meses">
+    <div class="svc-name">Top Model Look</div>
+    <p class="svc-desc">Aplicação de ácido hialurônico em pontos específicos para realçar a beleza com visual sofisticado e equilibrado. Duração média de 12 meses.</p>
+    <div class="svc-dur">~12 meses</div>
+  </div>
+  <div class="svc-row" data-duration="9–12 meses">
+    <div class="svc-name">Rinomodelação</div>
+    <p class="svc-desc">Técnica não cirúrgica com preenchedores delicados para ajustar a forma do nariz de forma natural e harmoniosa. Duração de 9 a 12 meses.</p>
+    <div class="svc-dur">9–12 meses</div>
+  </div>
+</section>
+
+<div class="svc-sep">◆  Bioestimuladores &amp; Regeneração  ◆</div>
+<section class="svc-cat" data-cat>
+  <div class="svc-cat-header">
+    <div class="svc-cat-num">02</div>
+    <h2 class="svc-cat-title">Bioestimuladores &amp; Regeneração</h2>
+  </div>
+  <div class="svc-cat-line"></div>
+  <div class="svc-row" data-duration="12–16 meses">
+    <div class="svc-name">Bioestimuladores de Colágeno (Sculptra e Radiesse)</div>
+    <p class="svc-desc">Estimulação natural da produção de colágeno para firmeza e elasticidade duradouras. Duração de 12 a 16 meses.</p>
+    <div class="svc-dur">12–16 meses</div>
+  </div>
+  <div class="svc-row" data-duration="6–8 meses">
+    <div class="svc-name">Bioregenador Celular (PDRN)</div>
+    <p class="svc-desc">Polinucleotídeo Desoxirribonucleico que estimula a regeneração celular, melhorando saúde e vitalidade da pele. Duração de 6 a 8 meses.</p>
+    <div class="svc-dur">6–8 meses</div>
+  </div>
+  <div class="svc-row" data-duration="8–12 meses">
+    <div class="svc-name">Profhilo</div>
+    <p class="svc-desc">Hidratação profunda que promove aparência mais firme e jovial. Duração de 8 a 12 meses.</p>
+    <div class="svc-dur">8–12 meses</div>
+  </div>
+</section>
+
+<div class="svc-sep">◆  Tecnologias Avançadas  ◆</div>
+<section class="svc-cat" data-cat>
+  <div class="svc-cat-header">
+    <div class="svc-cat-num">03</div>
+    <h2 class="svc-cat-title">Tecnologias Avançadas</h2>
+  </div>
+  <div class="svc-cat-line"></div>
+  <div class="svc-row" data-duration="Sessões">
+    <div class="svc-name">Ultraformer III</div>
+    <p class="svc-desc">Ultrassom micro e macrofocado com ação térmica entre 65–75°C para firmeza, lifting, definição facial e redução de papada.</p>
+    <div class="svc-dur">Sessões</div>
+  </div>
+  <div class="svc-row" data-duration="Sessões">
+    <div class="svc-name">Laser Lavieen</div>
+    <p class="svc-desc">Laser focado na melhora da textura, tratamento de manchas e renovação celular de forma não invasiva.</p>
+    <div class="svc-dur">Sessões</div>
+  </div>
+  <div class="svc-row" data-duration="Sessões">
+    <div class="svc-name">Jato de Plasma</div>
+    <p class="svc-desc">Energia não invasiva para renovação celular, melhora de textura, rugas finas e cicatrizes.</p>
+    <div class="svc-dur">Sessões</div>
+  </div>
+  <div class="svc-row" data-duration="Sessões">
+    <div class="svc-name">Radiofrequência Microagulhada</div>
+    <p class="svc-desc">Combinação de radiofrequência e microagulhamento para estimular colágeno e promover pele mais firme.</p>
+    <div class="svc-dur">Sessões</div>
+  </div>
+  <div class="svc-row" data-duration="Individual">
+    <div class="svc-name">Endolifting</div>
+    <p class="svc-desc">Minimamente invasivo, com fibra óptica para estímulo de colágeno, retração da pele e redução de gordura e flacidez.</p>
+    <div class="svc-dur">Individual</div>
+  </div>
+</section>
+
+<div class="svc-sep">◆  Pele &amp; Rejuvenescimento  ◆</div>
+<section class="svc-cat" data-cat>
+  <div class="svc-cat-header">
+    <div class="svc-cat-num">04</div>
+    <h2 class="svc-cat-title">Pele &amp; Rejuvenescimento</h2>
+  </div>
+  <div class="svc-cat-line"></div>
+  <div class="svc-row" data-duration="8–12 meses">
+    <div class="svc-name">Microagulhamento</div>
+    <p class="svc-desc">Dispositivo com microagulhas para melhorar textura, estimular colágeno, tratar cicatrizes e rugas. Drug Delivery para clareamento. Duração de 8 a 12 meses.</p>
+    <div class="svc-dur">8–12 meses</div>
+  </div>
+  <div class="svc-row" data-duration="Sessões">
+    <div class="svc-name">Peeling Químico</div>
+    <p class="svc-desc">Ácidos específicos para melhorar textura, suavizar manchas, acne e sinais de envelhecimento. Adaptável às necessidades individuais.</p>
+    <div class="svc-dur">Sessões</div>
+  </div>
+  <div class="svc-row" data-duration="Plano">
+    <div class="svc-name">Protocoll</div>
+    <p class="svc-desc">Procedimento personalizado combinando microagulhamento, bioestimuladores, ultrassom microfocado e peeling químico para flacidez em várias camadas.</p>
+    <div class="svc-dur">Plano</div>
+  </div>
+  <div class="svc-row" data-duration="Sessões">
+    <div class="svc-name">Line Skin</div>
+    <p class="svc-desc">Microagulhamento com drug delivery e peeling químico específico para manchas e Melasma com segurança e eficiência.</p>
+    <div class="svc-dur">Sessões</div>
+  </div>
+  <div class="svc-row" data-duration="Individual">
+    <div class="svc-name">Line Skin Hard (Fenol)</div>
+    <p class="svc-desc">Tratamento intensivo com fenol para rugas profundas e flacidez. Indicado para resultados substanciais em áreas isoladas.</p>
+    <div class="svc-dur">Individual</div>
+  </div>
+</section>
+
+<div class="svc-sep">◆  Fios &amp; Lifting  ◆</div>
+<section class="svc-cat" data-cat>
+  <div class="svc-cat-header">
+    <div class="svc-cat-num">05</div>
+    <h2 class="svc-cat-title">Fios &amp; Lifting</h2>
+  </div>
+  <div class="svc-cat-line"></div>
+  <div class="svc-row" data-duration="até 1 ano">
+    <div class="svc-name">Fios de PDO</div>
+    <p class="svc-desc">Fios de polidioxanona lisos, parafusos, espiculados e moldados para lifting facial não invasivo com anestesia local. Duração de até 1 ano.</p>
+    <div class="svc-dur">até 1 ano</div>
+  </div>
+  <div class="svc-row" data-duration="18–24 meses">
+    <div class="svc-name">Fios Silhouette</div>
+    <p class="svc-desc">Fios altamente tecnológicos para lifting, corrigindo flacidez da face, contorno mandibular, sobrancelha e pescoço. Duração de 18 a 24 meses.</p>
+    <div class="svc-dur">18–24 meses</div>
+  </div>
+</section>
+
+</main>
+
+<section class="svc-cta-band">
+  <div class="svc-cta-inner">
+    <h3 class="svc-cta-title">Pronta para começar?</h3>
+    <p class="svc-cta-sub">Agende sua avaliação exclusiva</p>
+    <a class="svc-cta-btn" href="https://wa.me/5511900000000" target="_blank">Agendar pelo WhatsApp →</a>
+  </div>
+</section>
+
+<footer>
+  <img src="uploads/pasted-1777392010488-0.png" class="footer-logo" alt="CV Monogram">
+  <p class="footer-name">Dra. Vanessa Cesconetto</p>
+  <p class="footer-specialty">Harmonização Facial Premium</p>
+  <div class="footer-divider"></div>
+  <div class="footer-social">
+    <a href="https://instagram.com/dra.vanessacesconetto" target="_blank">Instagram</a>
+    <a href="https://wa.me/5511900000000" target="_blank">WhatsApp</a>
+  </div>
+  <p class="footer-legal">
+    Procedimentos realizados por médica habilitada. Resultados individuais podem variar.<br>
+    © 2025 Dra. Vanessa Cesconetto · CRM/SP · Todos os direitos reservados.
+  </p>
+</footer>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+nav.classList.add('scrolled');
+
+document.querySelectorAll('.svc-row').forEach(row => {
+  const dur = row.getAttribute('data-duration');
+  const el = row.querySelector('.svc-dur');
+  if (dur && el) el.textContent = dur;
+});
+
+const catObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      catObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+document.querySelectorAll('[data-cat]').forEach(section => {
+  catObserver.observe(section);
+});
+</script>
+</body>
+</html>
