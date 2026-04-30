@@ -706,7 +706,7 @@
   </a>
   <div class="nav-links">
     <a href="#sobre" class="nav-link">Sobre</a>
-    <a href="#servicos" class="nav-link">Serviços</a>
+    <a href="servicos.html" class="nav-link">Serviços</a>
     <a href="#espaco" class="nav-link">Espaço</a>
   </div>
   <a href="https://wa.me/5511900000000" class="nav-cta btn-gold" target="_blank"><span>Agendar Consulta</span></a>
@@ -751,70 +751,8 @@
     <h2 class="section-title reveal reveal-delay-1" style="margin:0 auto">Serviços</h2>
     <p class="section-intro reveal reveal-delay-2" style="margin:16px auto 0">Cada procedimento é realizado com técnica refinada e produtos de excelência internacional.</p>
   </div>
-  <div class="servicos-track-wrap">
-    <div class="servicos-track-line"></div>
-    <div class="servicos-track" id="servicos-track">
-      <div class="servicos-row">
-        <article class="servico-card" style="background:#F5EFE6; animation-delay:0.05s">
-          <div class="servico-card-inner">
-            <div class="servico-card-topline"></div>
-            <span class="servico-card-num">01</span>
-            <h3 class="servico-card-name">Preenchimentos</h3>
-            <p class="servico-card-desc">Malar, mento, mandíbula e labial com ácido hialurônico</p>
-          </div>
-        </article>
-        <article class="servico-card" style="background:#EDE4D8; animation-delay:0.15s">
-          <div class="servico-card-inner">
-            <div class="servico-card-topline"></div>
-            <span class="servico-card-num">02</span>
-            <h3 class="servico-card-name">Toxina Botulínica</h3>
-            <p class="servico-card-desc">Suavização natural das linhas de expressão</p>
-          </div>
-        </article>
-        <article class="servico-card" style="background:#F5EFE6; animation-delay:0.25s">
-          <div class="servico-card-inner">
-            <div class="servico-card-topline"></div>
-            <span class="servico-card-num">03</span>
-            <h3 class="servico-card-name">Bioestimuladores</h3>
-            <p class="servico-card-desc">Sculptra e Radiesse para colágeno duradouro</p>
-          </div>
-        </article>
-        <article class="servico-card" style="background:#EAE0D2; animation-delay:0.35s">
-          <div class="servico-card-inner">
-            <div class="servico-card-topline"></div>
-            <span class="servico-card-num">04</span>
-            <h3 class="servico-card-name">Tecnologias</h3>
-            <p class="servico-card-desc">Ultraformer III, Laser Lavieen, Jato de Plasma</p>
-          </div>
-        </article>
-        <article class="servico-card" style="background:#F5EFE6; animation-delay:0.45s">
-          <div class="servico-card-inner">
-            <div class="servico-card-topline"></div>
-            <span class="servico-card-num">05</span>
-            <h3 class="servico-card-name">Fios &amp; Lifting</h3>
-            <p class="servico-card-desc">PDO, Silhouette e Endolifting não cirúrgico</p>
-          </div>
-        </article>
-        <article class="servico-card" style="background:#EDE4D8; animation-delay:0.55s">
-          <div class="servico-card-inner">
-            <div class="servico-card-topline"></div>
-            <span class="servico-card-num">06</span>
-            <h3 class="servico-card-name">Protocolos Premium</h3>
-            <p class="servico-card-desc">Tratamentos personalizados e combinados</p>
-          </div>
-        </article>
-      </div>
-    </div>
-    <div class="servicos-track-line"></div>
-    <div class="servicos-indicator" id="servicos-indicator">
-      <div class="servicos-indicator-line">
-        <span class="servicos-indicator-dot"></span>
-      </div>
-      <p class="servicos-indicator-text">arraste para explorar</p>
-    </div>
-    <div class="servicos-cta-wrap">
-      <a href="servicos.html" class="servicos-cta">Ver menu completo de serviços<span class="servicos-cta-arrow" aria-hidden="true"> →</span></a>
-    </div>
+  <div class="servicos-cta-wrap">
+    <a href="servicos.html" class="servicos-cta">Ver menu completo de serviços<span class="servicos-cta-arrow" aria-hidden="true"> →</span></a>
   </div>
 </section>
 
@@ -1050,123 +988,6 @@ document.querySelectorAll('.faq-q').forEach(btn => {
     if (!isOpen) item.classList.add('open');
   });
 });
-
-// ── SERVIÇOS DRAG SCROLL ──────────────────
-(function() {
-  const track = document.getElementById('servicos-track');
-  const indicator = document.getElementById('servicos-indicator');
-  const row = track ? track.querySelector('.servicos-row') : null;
-  if (!track || !row) return;
-
-  const originals = Array.from(row.querySelectorAll('.servico-card:not(.is-clone)'));
-  const headFrag = document.createDocumentFragment();
-  const tailFrag = document.createDocumentFragment();
-  originals.forEach(card => {
-    const headClone = card.cloneNode(true);
-    const tailClone = card.cloneNode(true);
-    headClone.classList.add('is-clone');
-    tailClone.classList.add('is-clone');
-    headFrag.appendChild(headClone);
-    tailFrag.appendChild(tailClone);
-  });
-  row.insertBefore(headFrag, row.firstChild);
-  row.appendChild(tailFrag);
-
-  let loopWidth = 0;
-  function measureLoop() {
-    loopWidth = row.scrollWidth / 3;
-    track.scrollLeft = loopWidth;
-  }
-  measureLoop();
-  window.addEventListener('resize', measureLoop);
-
-  let isDragging = false;
-  let startX = 0;
-  let startScrollLeft = 0;
-  let velocity = 0;
-  let momentumId = null;
-  let hasDragged = false;
-  let lastX = 0;
-  let lastMoveTime = 0;
-
-  function stopMomentum() {
-    if (momentumId) {
-      cancelAnimationFrame(momentumId);
-      momentumId = null;
-    }
-  }
-
-  function normalizeInfiniteScroll() {
-    if (!loopWidth) return;
-    if (track.scrollLeft < loopWidth * 0.5) {
-      track.scrollLeft += loopWidth;
-    } else if (track.scrollLeft > loopWidth * 1.5) {
-      track.scrollLeft -= loopWidth;
-    }
-  }
-
-  function startMomentum() {
-    stopMomentum();
-    const step = () => {
-      track.scrollLeft -= velocity;
-      normalizeInfiniteScroll();
-      velocity *= 0.95;
-      if (Math.abs(velocity) > 0.15) {
-        momentumId = requestAnimationFrame(step);
-      }
-    };
-    momentumId = requestAnimationFrame(step);
-  }
-
-  function hideIndicatorOnce() {
-    if (!hasDragged && indicator) {
-      hasDragged = true;
-      indicator.classList.add('is-hidden');
-    }
-  }
-
-  track.addEventListener('mousedown', (event) => {
-    isDragging = true;
-    track.classList.add('is-dragging');
-    startX = event.pageX;
-    startScrollLeft = track.scrollLeft;
-    lastX = event.pageX;
-    lastMoveTime = performance.now();
-    velocity = 0;
-    stopMomentum();
-  });
-
-  track.addEventListener('mousemove', (event) => {
-    if (!isDragging) return;
-    event.preventDefault();
-    const deltaX = event.pageX - startX;
-    track.scrollLeft = startScrollLeft - deltaX;
-    normalizeInfiniteScroll();
-
-    const now = performance.now();
-    const dt = Math.max(now - lastMoveTime, 1);
-    velocity = (event.pageX - lastX) / dt * 16;
-    lastX = event.pageX;
-    lastMoveTime = now;
-    hideIndicatorOnce();
-  });
-
-  function endDrag() {
-    if (!isDragging) return;
-    isDragging = false;
-    track.classList.remove('is-dragging');
-    startMomentum();
-  }
-
-  track.addEventListener('mouseleave', endDrag);
-  window.addEventListener('mouseup', endDrag);
-  track.addEventListener('dragstart', (event) => event.preventDefault());
-  track.addEventListener('scroll', normalizeInfiniteScroll, { passive: true });
-
-  track.addEventListener('touchstart', () => {
-    hideIndicatorOnce();
-  }, { passive: true });
-})();
 
 // ── ESPAÇO ZOOM PARALLAX ──────────────────
 (function() {
