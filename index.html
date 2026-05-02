@@ -513,18 +513,35 @@
     mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
   }
+  #espaco .carousel-wrapper {
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #espaco .carousel-wrapper.is-dragging {
+    cursor: grabbing;
+  }
   .espaco-carousel-track {
     display: flex;
     width: max-content;
     gap: 24px;
-    animation: espacoMarquee 25s linear infinite;
+    will-change: transform;
   }
-  .espaco-carousel-track:hover {
-    animation-play-state: paused;
+  .espaco-drag-hint {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: #C9A84C;
+    opacity: 0.7;
+    text-align: center;
+    margin: 0;
+    padding: 0.35rem 0 0;
+    transition: opacity 1.2s ease;
+    pointer-events: none;
   }
-  @keyframes espacoMarquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+  .espaco-drag-hint.is-hidden {
+    opacity: 0;
   }
   .espaco-card {
     width: 420px;
@@ -780,7 +797,7 @@
   </div>
   <div class="espaco-track-wrap">
     <div class="espaco-divider"></div>
-    <div class="espaco-carousel">
+    <div class="espaco-carousel carousel-wrapper">
       <div class="espaco-carousel-track">
         <div class="espaco-card"><img src="uploads/office1.png" alt="Lounge da clínica"></div>
         <div class="espaco-card"><img src="uploads/office2.png" alt="Detalhe de banquetas e lounge"></div>
@@ -801,6 +818,7 @@
 
       </div>
     </div>
+    <p class="espaco-drag-hint" id="espacoDragHint" aria-hidden="true">← arraste →</p>
     <div class="espaco-divider"></div>
   </div>
 </section>
@@ -1000,6 +1018,170 @@ document.querySelectorAll('.faq-q').forEach(btn => {
     if (!isOpen) item.classList.add('open');
   });
 });
+
+// ── NOSSO ESPAÇO — carousel (JS scroll + drag) ──
+(function initEspacoCarousel() {
+  const wrapper = document.querySelector('#espaco .carousel-wrapper');
+  const track = document.querySelector('#espaco .espaco-carousel-track');
+  const hint = document.getElementById('espacoDragHint');
+  if (!wrapper || !track) return;
+
+  let currentX = 0;
+  const velocity = -0.6;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartTranslate = 0;
+  let lastPointerX = 0;
+  let momentumVelocity = 0;
+  let isMomentumDecaying = false;
+  let decayToken = 0;
+  let TOTAL_WIDTH = 0;
+  let hintDismissed = false;
+  let isWheeling = false;
+  let wheelEndTimer;
+
+  function dismissHint() {
+    if (hintDismissed || !hint) return;
+    hintDismissed = true;
+    hint.classList.add('is-hidden');
+  }
+
+  function wrapPosition() {
+    if (TOTAL_WIDTH <= 0) return;
+    if (currentX > 0) currentX -= TOTAL_WIDTH;
+    if (Math.abs(currentX) >= TOTAL_WIDTH) currentX += TOTAL_WIDTH;
+  }
+
+  function measure() {
+    TOTAL_WIDTH = track.scrollWidth / 2;
+    wrapPosition();
+  }
+
+  function applyMomentum() {
+    if (Math.abs(momentumVelocity) < 0.1) return;
+    isMomentumDecaying = true;
+    const token = ++decayToken;
+    let frames = 0;
+    const decay = () => {
+      if (token !== decayToken) {
+        isMomentumDecaying = false;
+        return;
+      }
+      if (frames > 20 || Math.abs(momentumVelocity) < 0.1) {
+        isMomentumDecaying = false;
+        return;
+      }
+      currentX += momentumVelocity * 0.85;
+      momentumVelocity *= 0.85;
+      frames++;
+      wrapPosition();
+      requestAnimationFrame(decay);
+    };
+    requestAnimationFrame(decay);
+  }
+
+  function onDown(clientX) {
+    decayToken++;
+    isMomentumDecaying = false;
+    isDragging = true;
+    dragStartX = clientX;
+    dragStartTranslate = currentX;
+    lastPointerX = clientX;
+    momentumVelocity = 0;
+    wrapper.classList.add('is-dragging');
+  }
+
+  function onMove(clientX) {
+    if (!isDragging) return;
+    if (!hintDismissed && hint && Math.abs(clientX - dragStartX) > 6) dismissHint();
+    const delta = clientX - dragStartX;
+    currentX = dragStartTranslate + delta;
+    momentumVelocity = clientX - lastPointerX;
+    lastPointerX = clientX;
+    wrapPosition();
+  }
+
+  function onUp() {
+    if (!isDragging) return;
+    isDragging = false;
+    wrapper.classList.remove('is-dragging');
+    applyMomentum();
+  }
+
+  wrapper.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    onDown(e.clientX);
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    onMove(e.clientX);
+  });
+
+  window.addEventListener('mouseup', onUp);
+  window.addEventListener('mouseleave', onUp);
+
+  wrapper.addEventListener('touchstart', (e) => {
+    if (!e.touches.length) return;
+    onDown(e.touches[0].clientX);
+  }, { passive: true });
+
+  wrapper.addEventListener('touchmove', (e) => {
+    if (!isDragging || !e.touches.length) return;
+    e.preventDefault();
+    onMove(e.touches[0].clientX);
+  }, { passive: false });
+
+  function onTouchEndOutside() {
+    if (isDragging) onUp();
+  }
+  document.addEventListener('touchend', onTouchEndOutside, { passive: true });
+  document.addEventListener('touchcancel', onTouchEndOutside, { passive: true });
+
+  wrapper.addEventListener('wheel', (e) => {
+    if (isDragging || e.ctrlKey || TOTAL_WIDTH <= 0) return;
+    let dx = e.deltaX;
+    if (e.deltaMode === 1) dx *= 32;
+    else if (e.deltaMode === 2) dx *= (wrapper.clientWidth || 1);
+    if (Math.abs(dx) < 0.5) return;
+    if (Math.abs(dx) <= Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    decayToken++;
+    isMomentumDecaying = false;
+    currentX -= dx;
+    wrapPosition();
+    isWheeling = true;
+    clearTimeout(wheelEndTimer);
+    wheelEndTimer = setTimeout(() => {
+      isWheeling = false;
+    }, 220);
+    if (!hintDismissed && hint) dismissHint();
+  }, { passive: false });
+
+  function animate() {
+    if (TOTAL_WIDTH > 0) {
+      if (!isDragging && !isMomentumDecaying && !isWheeling) {
+        currentX += velocity;
+        if (currentX > 0) currentX -= TOTAL_WIDTH;
+        if (Math.abs(currentX) >= TOTAL_WIDTH) currentX += TOTAL_WIDTH;
+      }
+    }
+    track.style.transform = `translateX(${currentX}px)`;
+    requestAnimationFrame(animate);
+  }
+
+  requestAnimationFrame(animate);
+
+  window.addEventListener('load', () => {
+    setTimeout(measure, 100);
+  });
+  setTimeout(measure, 100);
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(measure, 100);
+  });
+})();
 
 </script>
 </body>
